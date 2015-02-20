@@ -2,10 +2,11 @@
 ## VDM Test Interview
 1. cloner le repo
 2. faire un vhost pointant sur le dossier /public/
-3. installer & activer le [driver php mongo] (http://pecl.php.net/package/mongo)
-4. **configurer votre environnement : renommer le fichier '.env.example' ( à la racine du projet )  en '.env'**
+3. executer la commande "composer update" pour récupérer les dépendances ( vendor )
+4. installer & activer le [driver php mongo] (http://pecl.php.net/package/mongo)
+5. **configurer votre environnement : renommer le fichier '.env.example' ( à la racine du projet )  en '.env'**
 *Attention a bien saisir le user/mdp fourni dans l'email pour vous connecter à l'instance mongo distante*
-5. tester la connexion au serveur mongodb via l'url : *http://your.domain.com/api/vdm/*
+6. tester la connexion au serveur mongodb via l'url : *http://your.domain.com/api/vdm/*
 
 
 #Ligne de commande :
