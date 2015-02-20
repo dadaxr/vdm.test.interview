@@ -65,7 +65,7 @@ class ExampleTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testShow()
+	public function testShowWithValidPostId()
 	{
 		/* Code conservé Pour info. Il s'agissait d'une tentative d'abstraction des appels à la bdd.
 		$post_id = '54e6792e33b55c78130001b0';
@@ -73,9 +73,24 @@ class ExampleTest extends TestCase {
 		$this->_vdm_posts->shouldReceive('findOne')->andReturn($this->_post_stub);
 		*/
 
-
 		$response = $this->call('GET', '/api/vdm/show/54e6792e33b55c78130001b0');
-		$this->assertJson($response->getContent());
+		$this->assertJson($response->getContent(),'check response is valid JSON');
+        $response_decoded = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('post',$response_decoded);
+        if(!empty($response_decoded['post'])){
+            $this->assertArrayHasKey('_id',$response_decoded['post']);
+            $this->assertArrayHasKey('content',$response_decoded['post']);
+            $this->assertArrayHasKey('datetime',$response_decoded['post']);
+            $this->assertArrayHasKey('author',$response_decoded['post']);
+        }
 	}
+
+    public function testShowWithInvalidPostId()
+    {
+        $response = $this->call('GET', '/api/vdm/show/id_invalid_1234');
+        $this->assertJson($response->getContent(),'check response is valid JSON');
+        $response_decoded = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('error',$response_decoded);
+    }
 
 }

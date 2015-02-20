@@ -38,45 +38,15 @@ class VDMPostsController extends Controller {
     }
 
 
-    /**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function getIndex()
-	{
-        URL::setRootControllerNamespace('App\Http\Controllers');
-        $show_url = action('VDMPostsController@getShow');
-        $posts_url = action('VDMPostsController@getPosts');
-        $filldb_url = action('VDMPostsController@getFilldb');
-
-        echo 'try these actions : <br/>';
-        echo 'show/id : '.$show_url.'<br/>';
-        echo 'posts : '.$posts_url.'<br/>';
-        echo 'filldb : '.$filldb_url.'<br/>';
-
-    }
-
-
-    public function getFilldb(){
-        $result = null;
-        Event::listen('App\Events\VDMPostsSniffed', function(VDMPostsSniffed $event) use(&$result)
-        {
-            $result = $event->list_posts;
-        });
-
-        Bus::dispatch(
-            new \App\Commands\VDMSniffer(200)
-        );
-
-        dd($result);
-    }
-
-
     public function getPosts($id = null){
         if(!empty($id)){
             return $this->getShow($id);
         }else{
+
+            $response_result = array(
+                'posts' => array(),
+                'count' => 0
+            );
 
             $from = $this->_request->get('from');
             $to = $this->_request->get('to');
@@ -100,20 +70,18 @@ class VDMPostsController extends Controller {
                 $query['author'] = $author;
             }
 
-            /**
-             * @var \MongoCursor $results_cursor;
-             */
-            $results_cursor = $this->_vdm_posts->find($query);
-            $response_result = array(
-                'posts' => array(),
-                'count' => 0
-            );
-            $response_result['posts'] = iterator_to_array($results_cursor, false);
-            $response_result['count'] = count($response_result['posts']);
-
+            try{
+                /**
+                 * @var \MongoCursor $results_cursor;
+                 */
+                $results_cursor = $this->_vdm_posts->find($query);
+                $response_result['posts'] = iterator_to_array($results_cursor, false);
+                $response_result['count'] = count($response_result['posts']);
+            }catch (\MongoException $e){
+                $response_result['error'] = $e->getMessage();
+            }
 
             return $this->formatResponse($response_result);
-
         }
     }
 
@@ -127,12 +95,16 @@ class VDMPostsController extends Controller {
     public function getShow($id)
     {
         $query = array();
-
-        $object_id = new \MongoId($id);
-        $query['_id'] = $object_id;
-
-        $result = $this->_vdm_posts->findOne($query);
-        $response_result = array('post' => $result);
+        $response_result = array(
+            'post' => null,
+        );
+        try{
+            $object_id = new \MongoId($id);
+            $query['_id'] = $object_id;
+            $response_result['post'] = $this->_vdm_posts->findOne($query);
+        }catch(\MongoException $e){
+            $response_result['error'] = $e->getMessage();
+        }
         return $this->formatResponse($response_result);
     }
 
@@ -145,6 +117,21 @@ class VDMPostsController extends Controller {
             $result = (object) $result;
             return response()->json($result);
         }
+    }
+
+
+    public function getFilldb(){
+        $result = null;
+        Event::listen('App\Events\VDMPostsSniffed', function(VDMPostsSniffed $event) use(&$result)
+        {
+            $result = $event->list_posts;
+        });
+
+        Bus::dispatch(
+            new \App\Commands\VDMSniffer(200)
+        );
+
+        dd($result);
     }
 
 	/**

@@ -46,6 +46,13 @@ tester les routes :
 > http://your.domain.com/api/vdm/posts/54e6792e33b55c78130001b0&dd=true
 
 
+# TEST Unitaire
+
+executer la commande ci-dessous dans un terminal ( depuis la racine du projet ):
+
+    php phpunit.phar
+
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
