@@ -28,8 +28,13 @@ class VDMPostsController extends Controller {
     function __construct(Request $request)
     {
         $this->_request = $request;
-        $this->_vdm_db = App::make('VDMMongoDB');
-        $this->_vdm_posts = $this->_vdm_db->posts;
+        try{
+            $this->_vdm_db = App::make('VDMMongoDB');
+            $this->_vdm_posts = $this->_vdm_db->posts;
+        }catch (\MongoException $e){
+            return $e->getMessage();
+        }
+
     }
 
 
