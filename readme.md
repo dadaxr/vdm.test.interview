@@ -1,3 +1,51 @@
+---
+## VDM Test Interview
+1. cloner le repo
+2. faire un vhost pointant sur le dossier /public/
+3. installer & activer le [driver php mongo] (http://pecl.php.net/package/mongo)
+4. **configurer votre environnement : renommer le fichier '.env.example' ( à la racine du projet )  en '.env'**
+*Attention a bien saisir le user/mdp fourni dans l'email pour vous connecter à l'instance mongo distante*
+5. tester la connexion au serveur mongodb via l'url : *http://your.domain.com/api/vdm/*
+
+
+#Ligne de commande :
+
+ouvrir un terminal, se mettre à la racine du projet et executer la commande pour alimenter la bdd :
+
+
+    php artisan (permet de lister les commandes dispo)
+
+    php artisan vdm:sniffer
+
+> option par défaut : 10 posts, possibilité de surcharger via l'option --posts-count=X
+
+    php artisan vdm:sniffer --posts-count=20
+
+
+
+# API REST
+
+tester les routes :
+
+> http://your.domain.com/api/vdm/
+
+> http://your.domain.com/api/vdm/posts
+
+> http://your.domain.com/api/vdm/posts/54e6792e33b55c78130001b0
+
+> http://your.domain.com/api/vdm/posts?from=2015-02-20
+
+> http://your.domain.com/api/vdm/posts?to=2015-02-21
+
+> http://your.domain.com/api/vdm/posts?from=2015-02-20&to=2015-02-21
+
+> http://your.domain.com/api/vdm/posts?author=Seuneuceufeu
+
+* - pour optimiser l'affichage dans le navigateur rajouter le dd=true :*
+
+> http://your.domain.com/api/vdm/posts/54e6792e33b55c78130001b0&dd=true
+
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
