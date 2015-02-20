@@ -32,8 +32,7 @@ class VDMPostsController extends Controller {
             $this->_vdm_db = App::make('VDMMongoDB');
             $this->_vdm_posts = $this->_vdm_db->posts;
         }catch (\MongoException $e){
-            echo $e->getMessage();
-            die();
+            abort(500, $e->getMessage());
         }
 
     }
